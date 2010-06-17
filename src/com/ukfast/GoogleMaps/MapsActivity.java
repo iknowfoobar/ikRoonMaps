@@ -1,9 +1,7 @@
 package com.ukfast.GoogleMaps;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +20,6 @@ public class MapsActivity extends MapActivity {
 	private static final int FIND_ME_ID = 3;
 	private boolean isSatelliteView = false;
 	private boolean isStreetView = false;
-	private LocationManager locationManager;
 	private MyLocationOverlay myLocationOverlay;
 	
     /** Called when the activity is first created. */
@@ -36,7 +33,6 @@ public class MapsActivity extends MapActivity {
         
         mapController = mapView.getController();
         
-        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         myLocationOverlay = new MyLocationOverlay(this, mapView);
         myLocationOverlay.enableMyLocation();
         myLocationOverlay.enableCompass();
