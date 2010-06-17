@@ -4,23 +4,23 @@
     android:layout_height="fill_parent">
  	
  	<!-- Debug Version -->
-    <com.google.android.maps.MapView 
+    <!-- <com.google.android.maps.MapView 
         android:id="@+id/mapView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:enabled="true"
         android:clickable="true"
         android:apiKey="0dKc6awmL2oA7OYkCUKk9idPdqztgcVK5J5254A"
-        />
+        /> -->
         
     <!-- Signed Version -->  
-	<!-- <com.google.android.maps.MapView 
+	<com.google.android.maps.MapView 
         android:id="@+id/mapView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:enabled="true"
         android:clickable="true"
         android:apiKey="0dKc6awmL2oBm0uYnJXzVWYSL_GcrBSB3Ayn73g"
-        /> -->
+        />
  
 </RelativeLayout>

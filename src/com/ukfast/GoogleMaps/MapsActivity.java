@@ -3,8 +3,6 @@ package com.ukfast.GoogleMaps;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.location.Criteria;
-import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +12,7 @@ import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 
 public class MapsActivity extends MapActivity {
 	private MapView mapView;
@@ -24,6 +23,7 @@ public class MapsActivity extends MapActivity {
 	private boolean isSatelliteView = false;
 	private boolean isStreetView = false;
 	private LocationManager locationManager;
+	private MyLocationOverlay myLocationOverlay;
 	
     /** Called when the activity is first created. */
 	@Override
@@ -35,6 +35,12 @@ public class MapsActivity extends MapActivity {
         mapView.setBuiltInZoomControls(true);
         
         mapController = mapView.getController();
+        
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        myLocationOverlay = new MyLocationOverlay(this, mapView);
+        myLocationOverlay.enableMyLocation();
+        myLocationOverlay.enableCompass();
+        mapView.getOverlays().add(myLocationOverlay);
     }
     
     @Override
@@ -43,6 +49,20 @@ public class MapsActivity extends MapActivity {
     }
     
     @Override
+	protected void onPause() {
+		super.onPause();
+		myLocationOverlay.disableMyLocation();
+        myLocationOverlay.disableCompass();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		myLocationOverlay.enableMyLocation();
+        myLocationOverlay.enableCompass();
+	}
+
+	@Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         menu.add(0, SATELLITE_ID, 0, R.string.menu_satellite);
@@ -80,34 +100,18 @@ public class MapsActivity extends MapActivity {
         return super.onMenuItemSelected(featureId, item);
     }
 
-	private boolean findMe() {
-		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		Criteria criteria = new Criteria();
-		String bestProvider = locationManager.getBestProvider(criteria, false);
-		Location location = null;
-		String errorMes = "";
-		
-		if(bestProvider != null) {
-			location = locationManager.getLastKnownLocation(bestProvider);
-			errorMes = "You must turn on Network Location or GPS";
-		}
-		
-		if(bestProvider != null && location != null) {
-			Double lat = location.getLatitude() * 1E6;
-			Double lng = location.getLongitude() * 1E6;
-			GeoPoint point = new GeoPoint(lat.intValue(), lng.intValue());
-			mapController.animateTo(point);
-		} else {
-			if(location.getProvider() == "network") {
-				errorMes = ": " + getResources().getString(R.string.location_error_network);
-			}
-				
-			if(location.getProvider() == "gps") {
-				errorMes = ": " + getResources().getString(R.string.location_error_gps);
-			}
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Unable to find your location" + errorMes)
+	private void findMe() {
+		GeoPoint point = myLocationOverlay.getMyLocation();
+		updateWithNewLocation(point);
+	}
+
+	private void updateWithNewLocation(GeoPoint point) {
+
+        if (point != null) {
+            mapController.animateTo(point);
+        } else {
+        	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("Unable to find your location, check that you have enabled Cell Tower or GPS Locationing.")
 			.setCancelable(false)
 			.setNeutralButton("OK", new DialogInterface.OnClickListener() {				
 				@Override
@@ -117,7 +121,7 @@ public class MapsActivity extends MapActivity {
 			});
 			AlertDialog alert = builder.create();
 			alert.show();
-		}
-		return true;
+        }
+		
 	}
 }
