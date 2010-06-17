@@ -5,4 +5,6 @@
     <string name="menu_satellite">Satellite View</string>
     <string name="menu_street">Street View</string>
     <string name="find_me">Find Me</string>
+    <string name="location_error_network">Unable to determine location using Cell Towers</string>
+    <string name="location_error_gps">Unable to determine location using GPS</string>
 </resources>

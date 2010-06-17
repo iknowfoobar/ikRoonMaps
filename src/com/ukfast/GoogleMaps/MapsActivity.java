@@ -84,17 +84,30 @@ public class MapsActivity extends MapActivity {
 		locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 		Criteria criteria = new Criteria();
 		String bestProvider = locationManager.getBestProvider(criteria, false);
+		Location location = null;
+		String errorMes = "";
 		
 		if(bestProvider != null) {
-			Location location = locationManager.getLastKnownLocation(bestProvider);
-			
+			location = locationManager.getLastKnownLocation(bestProvider);
+			errorMes = "You must turn on Network Location or GPS";
+		}
+		
+		if(bestProvider != null && location != null) {
 			Double lat = location.getLatitude() * 1E6;
 			Double lng = location.getLongitude() * 1E6;
 			GeoPoint point = new GeoPoint(lat.intValue(), lng.intValue());
 			mapController.animateTo(point);
 		} else {
+			if(location.getProvider() == "network") {
+				errorMes = ": " + getResources().getString(R.string.location_error_network);
+			}
+				
+			if(location.getProvider() == "gps") {
+				errorMes = ": " + getResources().getString(R.string.location_error_gps);
+			}
+			
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Unable to find your location")
+			builder.setMessage("Unable to find your location" + errorMes)
 			.setCancelable(false)
 			.setNeutralButton("OK", new DialogInterface.OnClickListener() {				
 				@Override
