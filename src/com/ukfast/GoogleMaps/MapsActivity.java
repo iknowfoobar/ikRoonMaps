@@ -101,7 +101,7 @@ public class MapsActivity extends MapActivity {
 		updateWithNewLocation(point);
 	}
 
-	private void updateWithNewLocation(GeoPoint point) {
+	public void updateWithNewLocation(GeoPoint point) {
 
         if (point != null) {
             mapController.animateTo(point);
