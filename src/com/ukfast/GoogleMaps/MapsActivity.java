@@ -107,7 +107,7 @@ public class MapsActivity extends MapActivity {
             mapController.animateTo(point);
         } else {
         	AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setMessage("Unable to find your location, check that you have enabled Cell Tower or GPS Locationing.")
+			builder.setMessage(getResources().getString(R.string.location_error))
 			.setCancelable(false)
 			.setNeutralButton("OK", new DialogInterface.OnClickListener() {				
 				@Override
